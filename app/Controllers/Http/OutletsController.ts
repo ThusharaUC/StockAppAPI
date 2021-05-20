@@ -2,12 +2,12 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Outlet from "App/Models/Outlet";
 export default class OutletsController {
 
-    public async index({ request}: HttpContextContract)
+    public async index({}: HttpContextContract)
         {
             const outlet = await Outlet.query();
             return outlet
         }
-        public async show({ request, params}: HttpContextContract)
+        public async show({ params}: HttpContextContract)
         {
             try {
                 const outlet = await Outlet.find(params.id);
@@ -19,7 +19,7 @@ export default class OutletsController {
 
         }
 
-        public async update({ auth, request, params}: HttpContextContract)
+        public async update({ request, params}: HttpContextContract)
         {
             const outlet = await Outlet.find(params.id);
             if (outlet) {
@@ -34,9 +34,9 @@ export default class OutletsController {
             return; // 401
         }
 
-        public async store({ auth, request, response}: HttpContextContract)
+        public async store({request}: HttpContextContract)
         {
-            const user = await auth.authenticate();
+            // const user = await auth.authenticate();
             const outlet = new Outlet();
             outlet.name = request.input('name');
                 outlet.location = request.input('location');
@@ -44,10 +44,11 @@ export default class OutletsController {
                 await outlet.save();
             return outlet
         }
-        public async destroy({response, auth, request, params}: HttpContextContract)
+        public async destroy({response, auth, params}: HttpContextContract)
         {
            const user = await auth.authenticate();
-           const post = await Outlet.query().where('user_id', user.id).where('id', params.id).delete();
+           const outlet = await Outlet.query().where('user_id', user.id).where('id', params.id).delete();
+           console.log(outlet);
            return response.redirect('/dashboard');
         }
 }

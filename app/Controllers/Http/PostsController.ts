@@ -1,12 +1,12 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
     import Post from "App/Models/Post";
     export default class PostsController {
-         public async index({ request}: HttpContextContract)
+         public async index({}: HttpContextContract)
         {
             const posts = await Post.query().preload('user').preload('forum');
             return posts
         }
-        public async show({ request, params}: HttpContextContract)
+        public async show({ params}: HttpContextContract)
         {
             try {
                 const post = await Post.find(params.id);
@@ -21,7 +21,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
         }
 
-        public async update({ auth, request, params}: HttpContextContract)
+        public async update({ request, params}: HttpContextContract)
         {
             const post = await Post.find(params.id);
             if (post) {
@@ -37,7 +37,7 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
             return; // 401
         }
 
-        public async store({ auth, request, response}: HttpContextContract)
+        public async store({ auth, request}: HttpContextContract)
         {
             const user = await auth.authenticate();
             const post = new Post();
@@ -47,10 +47,11 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
             await user.related('posts').save(post)
             return post
         }
-        public async destroy({response, auth, request, params}: HttpContextContract)
+        public async destroy({response, auth, params}: HttpContextContract)
         {
            const user = await auth.authenticate();
            const post = await Post.query().where('user_id', user.id).where('id', params.id).delete();
+           console.log(post);
            return response.redirect('/dashboard');
         }
     }

@@ -32,11 +32,21 @@ Route.group(() => {
   Route.post("stocks/:id", "StocksController.update");
   Route.delete("stocks/:id", "StocksController.destroy");
 }).middleware("auth:api");
+Route.group(() => {
+    Route.get("items", "ItemsController.index");
+    Route.post("items", "ItemsController.store");
+    Route.post("items/:id", "ItemsController.update");
+    Route.delete("items/:id", "ItemsController.destroy");
+}).middleware("auth:api");
+Route.group(() => {
+  Route.get("outlets", "OutletsController.index");
+  Route.post("outlets", "OutletsController.store");
+  Route.post("outlets/:id", "OutletsController.update");
+  Route.delete("outlets/:id", "OutletsController.destroy");
+}).middleware("auth:api");
   Route.group(() => {
     Route.resource("posts", "PostsController").apiOnly();
     Route.resource("forums", "ForumsController").apiOnly();
-    Route.resource("outlets", "OutletsController").apiOnly();
-    Route.resource("items", "ItemsController").apiOnly();
     Route.resource("users", "ItemsController").apiOnly();
     Route.get("users/forums", "UsersController.forumsByUser");
     Route.get("users/posts", "UsersController.postsByUser");

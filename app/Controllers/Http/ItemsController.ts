@@ -2,12 +2,12 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Item from "App/Models/Item";
 export default class OutletsController {
 
-    public async index({ request}: HttpContextContract)
+    public async index({}: HttpContextContract)
         {
             const item = await Item.query();
             return item
         }
-        public async show({ request, params}: HttpContextContract)
+        public async show({ params}: HttpContextContract)
         {
             try {
                 const item = await Item.find(params.id);
@@ -19,7 +19,7 @@ export default class OutletsController {
 
         }
 
-        public async update({ auth, request, params}: HttpContextContract)
+        public async update({ request, params}: HttpContextContract)
         {
             const item = await Item.find(params.id);
             if (item) {
@@ -34,9 +34,8 @@ export default class OutletsController {
             return; // 401
         }
 
-        public async store({ auth, request, response}: HttpContextContract)
+        public async store({request}: HttpContextContract)
         {
-            const user = await auth.authenticate();
             const item = new Item();
             item.name = request.input('name');
                 item.brand = request.input('brand');
@@ -44,10 +43,10 @@ export default class OutletsController {
                 await item.save();
             return item
         }
-        public async destroy({response, auth, request, params}: HttpContextContract)
+        public async destroy({params}: HttpContextContract)
         {
-           const user = await auth.authenticate();
-           const item = await Item.query().where('user_id', user.id).where('id', params.id).delete();
+           const item = await Item.query().where('id', params.id).delete();
+           console.log(item);
            return "success";
         }
 }

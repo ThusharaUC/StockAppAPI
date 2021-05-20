@@ -2,12 +2,12 @@ import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Stock from "App/Models/Stock";
 export default class OutletsController {
 
-    public async index({ request}: HttpContextContract)
+    public async index({}: HttpContextContract)
         {
             const stock = await Stock.query().preload('user').preload('item').preload('outlet');
             return stock
         }
-        public async show({ request, params}: HttpContextContract)
+        public async show({ params}: HttpContextContract)
         {
             try {
                 const stock = await Stock.find(params.id);
@@ -25,7 +25,7 @@ export default class OutletsController {
 
         }
 
-        public async update({ auth, request, params}: HttpContextContract)
+        public async update({  request, params}: HttpContextContract)
         {
             const stock = await Stock.find(params.id);
             if (stock) {
@@ -45,7 +45,7 @@ export default class OutletsController {
             return; // 401
         }
 
-        public async store({ auth, request, response}: HttpContextContract)
+        public async store({ auth, request}: HttpContextContract)
         {
             const user = await auth.authenticate();
             const stock = new Stock();
@@ -65,10 +65,11 @@ export default class OutletsController {
                 return stock
             }
         }
-        public async destroy({response, auth, request, params}: HttpContextContract)
+        public async destroy({ auth, params}: HttpContextContract)
         {
            const user = await auth.authenticate();
            const stock = await Stock.query().where('user_id', user.id).where('id', params.id).delete();
+           console.log(stock);
            return "success";
         }
 }

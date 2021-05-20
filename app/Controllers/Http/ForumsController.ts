@@ -3,13 +3,13 @@ import Forum from 'App/Models/Forum';
 
 export default class ForumsController {
 
-    public async index({ request}: HttpContextContract)
+    public async index({}: HttpContextContract)
     {
         const forums = await Forum.query().preload('user').preload('posts');
         return forums
     }
 
-    public async show({ request, params}: HttpContextContract)
+    public async show({  params}: HttpContextContract)
     {
         try {
             const forum = await Forum.find(params.id);
@@ -24,7 +24,7 @@ export default class ForumsController {
         
     }
 
-    public async update({ auth, request, params}: HttpContextContract)
+    public async update({ request, params}: HttpContextContract)
     {
         const forum = await Forum.find(params.id);
 
@@ -42,7 +42,7 @@ export default class ForumsController {
         return; // 401
     }
 
-    public async store({ auth, request, response}: HttpContextContract)
+    public async store({ auth, request}: HttpContextContract)
     {
         const user = await auth.authenticate();
         const forum = new Forum();
@@ -52,10 +52,11 @@ export default class ForumsController {
         return forum
     }
 
-    public async destroy({response, auth, request, params}: HttpContextContract)
+    public async destroy({ auth,  params}: HttpContextContract)
     {
        const user = await auth.authenticate();
        const forum = await Forum.query().where('user_id', user.id).where('id', params.id).delete();
+       console.log(forum);
        return 404
     }
 }
